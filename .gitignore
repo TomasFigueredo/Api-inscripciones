@@ -1,0 +1,19 @@
+# Dependencias — se reinstalan con: npm install 
+node_modules/ 
+
+# Variables de entorno — NUNCA subir al repositorio 
+.env 
+.env.local 
+.env.production 
+
+# Configuración personal del editor VS Code 
+.vscode/ 
+
+# Logs generados por Node y npm 
+logs/ 
+*.log 
+npm-debug.log* 
+
+# Archivos del sistema operativo 
+.DS_Store        # macOS 
+Thumbs.db        # Windows 
