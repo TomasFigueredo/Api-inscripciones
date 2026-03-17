@@ -47,7 +47,7 @@ btnMostrarTodo.addEventListener("click", async() =>{
         const respuestaServidor = await fetch("/api/inscripciones")
         const inscripciones = await respuestaServidor.json()
         cuerpoTabla.innerHTML = ""
-        console.log(`${inscripciones.length}`)
+        console.table(inscripciones.map(i => ({id: i._id, curso: i.cursoID.curso, usuario: i.usuarioID.usuario})))
         inscripciones.forEach(inscr =>{
             const trow = document.createElement("tr")
             trow.innerHTML = `
@@ -63,24 +63,44 @@ btnMostrarTodo.addEventListener("click", async() =>{
     }
 });
 
-/*btnMostrarTodo.addEventListener('click', async () => {
-try {
-    const res = await fetch('/api/inscripciones');
-    const inscripciones =  await res.json();
-    cuerpoTabla.innerHTML = '';
-    
-    // Crear filas
-    inscripciones.forEach(inscr => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-        <td>${inscr._id}</td>
-        <td>${inscr.curso?.cursoID || 'Sin curso'}</td>
-        <td>${inscr.usuario?.nombreID || 'Sin usuario'}</td>
-        <td>${new Date(inscr.fechaInscripcion).toLocaleDateString()}</td>
-        `;
-        cuerpoTabla.appendChild(tr);
-    });
-} catch (error) {
-    alert('Error al listar inscriptos: ' + error.message);
-}
-});*/
+btnBaja.addEventListener("click", async() =>{
+    const idSeleccionado = prompt("Ingrese el ID de la inscripción a eliminar")
+    if(!idSeleccionado){
+        return
+    }
+    const confirmacion = confirm("Esta seguro que desea eliminar la inscripción?")
+    if(!confirmacion){
+        return
+    }
+    try{
+        const respuestaServidor = await fetch(`/api/inscripciones/${idSeleccionado}`, {
+            method: "DELETE"
+        })
+        if(!respuestaServidor.ok){
+            const error = await respuestaServidor.json()
+            throw new Error(error.error)
+        }
+        alert("Se elimino con exito la inscripcion!")
+    }catch(error){
+        alert(error.message);
+    }
+})
+
+btnBuscarInscripcion.addEventListener("click", async() =>{
+    const idSeleccionado = prompt("Ingrese el ID de la inscripcion que desea buscar")
+    if(!idSeleccionado){
+        return
+    }
+    try{
+        const respuestaServidor = await fetch(`/api/inscripciones/${idSeleccionado}`)
+        if(!respuestaServidor.ok){
+            const errorVariable = await respuestaServidor.json()
+            throw new Error(errorVariable.error)
+        }
+        const inscripcion = await respuestaServidor.json()
+        alert(`La inscripcion seleccionada es la siguiente: ${inscripcion}`)
+    }catch(error){
+        alert(error.message)
+    }
+
+})
