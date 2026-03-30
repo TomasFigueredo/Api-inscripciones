@@ -8,12 +8,33 @@
 <body>
     
     <h1>PANEL DE INSCRIPCIONES</h1>
+    <a href="index.html"><button>VOLVER</button></a>
     <button id="btn-crear">Inscribir</button>
     <button id="btn-ver">Ver inscripciones</button>
     <button id="btn-eliminar">Eliminar inscripción</button>
     <button id="btn-buscar-inscripcion">Buscar por ID de inscripción</button>
     <button id="ver-inscripciones-curso">Mostrar inscripciones por curso</button>
 
+    <div id="container-cursos">
+        <label for="cursoID">Seleccione un curso!</label>
+        <select name="cursoID" id="cursoID">
+
+        </select>
+        <button id="boton-insc-curso">Buscar Inscriptos</button>
+        <h2>Usuarios Inscriptos por curso</h2>
+        <table border = "1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NOMBRE USUARIO</th>
+                    <th>EMAIL</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-usuarios-curso">
+
+            </tbody>
+        </table>
+    </div>
     <div id="container-tabla">
         <br>
         <h2>Tabla de inscripciones</h2>

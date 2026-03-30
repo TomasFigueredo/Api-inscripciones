@@ -94,3 +94,42 @@ exports.eliminarInscripcion = async(req, res) =>{
         })
     }
 }
+
+exports.buscarInscripcion = async(req, res) =>{
+    try{
+        const inscripcion = await Inscripcion.findById(req.params.id)
+            .populate("usuarioID")
+            .populate("cursoID")
+        if(!inscripcion){
+            return res.status(404).json({error:"No se encontró la inscripción por ese ID"});
+        }
+        return res.json(inscripcion);
+    }catch(error){
+        res.status(400).json({
+            error: error.message
+        })
+    }
+};
+
+exports.buscarInscripcionCurso = async(req, res) =>{
+    try{
+        console.log(`ESTE ES EL CURSO RECIBIDO ${req.params.cursoID}`)
+        const cursoBuscado = req.params.cursoID
+        if(!mongoose.Types.ObjectId.isValid(cursoBuscado)){
+            return res.status(400).json({error:"El ID buscado no es valido"})
+        }
+        const listaInscripciones = await Inscripcion.find({cursoID : cursoID})
+            .populate("usuarioID");
+            if(!listaInscripciones){
+            return res.status(404).json({error:"No se encontró la inscripción"});
+        }
+        console.log("TABLA LISTA INSCRIPTOS")
+        console.table(listaInscripciones)
+        const usuariosInscriptos = listaInscripciones.map(i => i.usuarioID)
+        return res.json(usuariosInscriptos)
+    }catch(error){
+        res.status(500).json({
+            error: error.message
+        })
+    }
+};

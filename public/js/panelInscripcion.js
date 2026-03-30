@@ -5,12 +5,38 @@ const btnBuscarInscripcion = document.getElementById("btn-buscar-inscripcion")
 const btnMostrarPorCurso = document.getElementById("ver-inscripciones-curso")
 const tablaInscripcion = document.getElementById("container-tabla")
 const cuerpoTabla = document.getElementById("tabla-inscripcion")
+const containerCursos = document.getElementById("container-cursos")
+const selectorCursos = document.getElementById("cursoID")
+const btnBuscarUsuariosPorCurso = document.getElementById("boton-insc-curso")
+const tablaUsuarios = document.getElementById("tabla-usuarios-curso")
 
 document.addEventListener("DOMContentLoaded", async() =>{
     tablaInscripcion.style.display = "none"
+    containerCursos.style.display = "none"
+    tablaUsuarios.style.display = "none"
     btnAlta.addEventListener("click", async() =>{
         tablaInscripcion.style.display = "none"
     })
+    btnMostrarPorCurso.addEventListener("click", async() =>{
+        containerCursos.style.display = "block"
+    })
+    try{
+        const respuestaServidor = await fetch("/api/cursos")
+        const cursosDevueltos = await respuestaServidor.json()
+        selectorCursos.innerHTML = "";
+        const opcionDefault = document.createElement("option")
+        opcionDefault.value = "";
+        opcionDefault.text = "SELECCIONE UN CURSO"
+        selectorCursos.appendChild(opcionDefault)
+        cursosDevueltos.forEach(curso=>{
+            const opcion = document.createElement("option")
+            opcion.value = curso._id
+            opcion.text = curso.nombre
+            selectorCursos.appendChild(opcion)
+        })
+    }catch(error){
+        alert(error.message)
+    }
 });
 
 btnAlta.addEventListener("click", async() =>{
@@ -98,9 +124,42 @@ btnBuscarInscripcion.addEventListener("click", async() =>{
             throw new Error(errorVariable.error)
         }
         const inscripcion = await respuestaServidor.json()
-        alert(`La inscripcion seleccionada es la siguiente: ${inscripcion}`)
+        alert(`La inscripcion seleccionada es la siguiente: ${inscripcion.usuarioID.nombre} ${inscripcion.cursoID.nombre} `)
     }catch(error){
         alert(error.message)
     }
 
+})
+
+btnBuscarUsuariosPorCurso.addEventListener("click", async() =>{
+    const cursoID = selectorCursos.value
+    if(!cursoID){
+        alert("El ID seleccionado no es valido")
+        return;
+    }
+    try{
+        const respuestaServidor = await fetch(`/api/inscripciones/curso/${cursoID}`)
+        if(!respuestaServidor.ok){
+            throw new Error("Respuesta del servidor erronea")
+        }
+        const listaUsuarios = await respuestaServidor.json()
+        tablaUsuarios.innerHTML = ""
+        if(listaUsuarios.length == 0){
+            const tr = document.createElement("tr")
+            tr.innerHTML = "<td colSpan = '4'>No hay usuarios inscriptos para el curso seleccionado</td>";
+            tablaUsuarios.appendChild(tr)
+            return;
+        }
+        listaUsuarios.forEach(usuario =>{
+            const trow = document.createElement("tr")
+            trow.innerHTML = `
+            <td>${usuario._id}</td>
+            <td>${usuario.nombre || "Sin nombre"}</td>
+            <td>${usuario.email || "Sin email"}</td>
+            `
+            tablaUsuarios.appendChild(trow)
+        });
+    }catch(error){
+        alert(error.message)
+    }
 })
