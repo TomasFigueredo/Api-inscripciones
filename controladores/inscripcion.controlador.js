@@ -118,13 +118,13 @@ exports.buscarInscripcionCurso = async(req, res) =>{
         if(!mongoose.Types.ObjectId.isValid(cursoBuscado)){
             return res.status(400).json({error:"El ID buscado no es valido"})
         }
-        const listaInscripciones = await Inscripcion.find({cursoID : cursoID})
+        const listaInscripciones = await Inscripcion.find({cursoID : cursoBuscado})
             .populate("usuarioID");
             if(!listaInscripciones){
             return res.status(404).json({error:"No se encontró la inscripción"});
         }
         console.log("TABLA LISTA INSCRIPTOS")
-        console.table(listaInscripciones)
+        console.table(listaInscripciones.map(i => i.toObject()))
         const usuariosInscriptos = listaInscripciones.map(i => i.usuarioID)
         return res.json(usuariosInscriptos)
     }catch(error){

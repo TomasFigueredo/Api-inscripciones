@@ -13,12 +13,8 @@ const tablaUsuarios = document.getElementById("tabla-usuarios-curso")
 document.addEventListener("DOMContentLoaded", async() =>{
     tablaInscripcion.style.display = "none"
     containerCursos.style.display = "none"
-    tablaUsuarios.style.display = "none"
     btnAlta.addEventListener("click", async() =>{
         tablaInscripcion.style.display = "none"
-    })
-    btnMostrarPorCurso.addEventListener("click", async() =>{
-        containerCursos.style.display = "block"
     })
     try{
         const respuestaServidor = await fetch("/api/cursos")
@@ -143,10 +139,11 @@ btnBuscarUsuariosPorCurso.addEventListener("click", async() =>{
             throw new Error("Respuesta del servidor erronea")
         }
         const listaUsuarios = await respuestaServidor.json()
+        console.table(listaUsuarios)
         tablaUsuarios.innerHTML = ""
         if(listaUsuarios.length == 0){
             const tr = document.createElement("tr")
-            tr.innerHTML = "<td colSpan = '4'>No hay usuarios inscriptos para el curso seleccionado</td>";
+            tr.innerHTML = "<td colspan = '4'>No hay usuarios inscriptos para el curso seleccionado</td>";
             tablaUsuarios.appendChild(tr)
             return;
         }
@@ -163,3 +160,7 @@ btnBuscarUsuariosPorCurso.addEventListener("click", async() =>{
         alert(error.message)
     }
 })
+
+btnMostrarPorCurso.addEventListener("click", async() =>{
+        containerCursos.style.display = "block"
+    })
