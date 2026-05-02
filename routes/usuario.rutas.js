@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const controladorUsuario = require("../controladores/usuario.controlador");
+
 /*mongosh "mongodb+srv://cluster0.zgvwx5g.mongodb.net/" --apiVersion 1 --username tomasfigueredoar_db_user*/
 
-router.post("/", controladorUsuario.crearUsuario)
+const {reglasUsuario} = require("../validators/usuario.validator")
+router.post("/", reglasUsuario, controladorUsuario.crearUsuario)
 router.get("/", controladorUsuario.obtenerUsuarios)
 router.get("/:id", controladorUsuario.obtenerUnUsuario)
 router.put("/:id", controladorUsuario.actualizarUsuario)

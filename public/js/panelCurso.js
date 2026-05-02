@@ -7,15 +7,7 @@ const tablaCursos = document.getElementById("tabla-cursos")
 btnCrear.addEventListener('click', async () => {
 
 const nombre = prompt('Ingrese nombre de curso:');
-if (!nombre) return;
-const cupo = prompt('Ingrese el cupo máxmio:');
-if (!cupo) return;
-
-const maxCupo = Number(cupo);
-if (isNaN(maxCupo)) {
-    alert('El cupo debe ser numérico');
-    return;
-}
+const maxCupo = prompt('Ingrese el cupo máximo:');
 
 const cursoAlta = { nombre, maxCupo };
 
@@ -28,7 +20,8 @@ try {
 
     if (!res.ok) {
     const err = await res.json();
-    throw new Error(err.error);
+    const mensaje = err.error || err.errores?.map(e => e.msg).join("\n") || "Error" 
+    throw new Error(mensaje);
     }
 
     const cursoCreado = await res.json();

@@ -7,9 +7,7 @@ const tablaUsuarios = document.getElementById("tabla-usuarios")
 btnAlta.addEventListener("click", async () =>{
     try{
         let nombre = prompt("Ingrese su Nombre")
-        if(!nombre) return
         let email = prompt("Ingrese su Email")
-        if(!email) return
         const usuario = {email, nombre}
         const respuestaServidor = await fetch("/api/usuarios", {
             method: "POST",
@@ -17,8 +15,9 @@ btnAlta.addEventListener("click", async () =>{
             body: JSON.stringify(usuario)
         });
         if(!respuestaServidor.ok){
-            const error = await respuestaServidor.json()
-            throw new Error(error.error)
+            const err = await respuestaServidor.json()
+            const mensaje = err.error || err.errores?.map(e => e.msg).join("\n") || "Error"
+            throw new Error(mensaje)
         }
         const usuarioCreado = await respuestaServidor.json()
         alert(`Usuario creado correctamente: ${usuarioCreado.nombre} ${usuarioCreado.email}`)
