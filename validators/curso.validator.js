@@ -1,5 +1,4 @@
 const {body, validationResult} = require("express-validator")
-
 const reglasCurso = [
     body("nombre")
         .isEmpty().withMessage("El nombre es requerido")
